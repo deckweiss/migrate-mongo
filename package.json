@@ -3,8 +3,6 @@
   "version": "2.0.2",
   "description": "Deckweiss fork of migrate-mongo. A database migration tool for MongoDB in Node",
   "type": "module",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc"
   },
@@ -12,6 +10,13 @@
   "license": "MIT",
   "keywords": [
     "migrate mongo mongodb migrations database"
+  ],
+  "exports": {
+    "types": "./dist/index.d.ts",
+    "default": "./dist/index.js"
+  },
+  "files": [
+    "dist/**/*"
   ],
   "repository": {
     "type": "git",
