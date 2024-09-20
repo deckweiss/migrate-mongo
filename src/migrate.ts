@@ -1,6 +1,5 @@
 import { Db } from "mongodb";
 import fs from "node:fs";
-import find from "lodash/find";
 import url from "url";
 
 export interface MigrationConfig {
@@ -46,15 +45,17 @@ export class Migrator {
         await migration.up(this.db);
       } catch (err) {
         const error = new Error(
+          // @ts-ignore
           `Could not migrate up ${item.fileName}: ${err.message}`,
         );
+        // @ts-ignore
         error.stack = err.stack;
         // @ts-ignore
         error.migrated = migrated;
         throw error;
       }
 
-      const journalCollection = this.db.collection(
+      const journalCollection = this.db.collection<JournalEntry>(
         this.config.journalCollectionName,
       );
       const { fileName } = item;
@@ -64,6 +65,7 @@ export class Migrator {
         await journalCollection.insertOne({ fileName, appliedAt });
       } catch (err) {
         throw new Error(
+          // @ts-ignore
           `Could not update "${this.config.journalCollectionName}" collection: ${err.message}`,
         );
       }
@@ -79,7 +81,7 @@ export class Migrator {
 
   async status(): Promise<StatusEntry[]> {
     const journal = this.getJournalFile();
-    const journalCollection = this.db.collection(
+    const journalCollection = this.db.collection<JournalEntry>(
       this.config.journalCollectionName,
     );
     const journalData = await journalCollection.find({}).toArray();
@@ -87,7 +89,9 @@ export class Migrator {
     const statusTable = await Promise.all(
       journal.migrations.map(async (fileName) => {
         let findTest = { fileName };
-        const itemInLog = find(journalData, findTest);
+        const itemInLog = journalData.find(
+          (j) => j.fileName === findTest.fileName,
+        );
         const appliedAt = itemInLog ? itemInLog.appliedAt : "PENDING";
         return { fileName, appliedAt };
       }),
