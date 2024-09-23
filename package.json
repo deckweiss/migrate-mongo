@@ -1,6 +1,6 @@
 {
   "name": "@deckweiss/migrate-mongo",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "description": "Deckweiss fork of migrate-mongo. A database migration tool for MongoDB in Node",
   "type": "module",
   "scripts": {
