@@ -1,4 +1,5 @@
 import { Db } from "mongodb";
+import { warn } from "node:console";
 import fs from "node:fs";
 import url from "url";
 
@@ -111,7 +112,9 @@ export class Migrator {
   private async loadMigrationFile(fileName: string) {
     return import(
       /* @vite-ignore */
-      url.pathToFileURL(`${this.config.migrationsFolder}/${fileName}`).pathname
+      url.fileURLToPath(
+        url.pathToFileURL(`${this.config.migrationsFolder}/${fileName}`),
+      )
     );
   }
 }
